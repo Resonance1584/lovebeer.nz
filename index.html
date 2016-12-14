@@ -5,7 +5,10 @@
     <title>&lt;3 LoveBeer NZ</title>
     <style>
       body {
-        background-color: #000;
+        background-color: #fdd835;
+      }
+      a {
+        text-decoration: none;
       }
       h1 {
         font-family: sans-serif;
@@ -13,12 +16,77 @@
         margin-right: auto;
         text-align: center;
         font-size: 75px;
-        color: #fff;
+        color: #ab7d34;
         margin-top: 15%;
+        position: relative;
+        z-index: 100;
+        transition: 0.2s ease;
+        text-overflow: clip;
+        white-space: nowrap;
+        overflow: hidden;
+      }
+      h1:hover {
+        transform: rotate(3deg);
+        font-size: 80px;
+        color: #a52a2a;
+      }
+      #container {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+      }
+      #paperCanvas {
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        position: aboslute;
+        z-index: 50;
       }
     </style>
+    <script type="text/javascript" src="lib/paperjs-v0.9.25/dist/paper-full.min.js"></script>
+    <script type="text/paperscript" canvas="paperCanvas">
+
+    var paths = []
+
+    var createBubble = function () {
+      var x = 20 + Math.floor((Math.random() * (view.size.width - 40)))
+      var y = 20 + Math.floor((Math.random() * (view.size.height - 40)))
+      paths.push(new Path.Circle({
+        center: new Point(x, y),
+        radius: Math.random() * 10,
+        strokeColor: '#000000'
+      }))
+    }
+    for (var i = 0; i < 10; i++) {
+      setTimeout(createBubble, Math.random() * 10000 + 250);
+    }
+
+    function onFrame(event) {
+      paths.forEach(function (path) {
+        path.scale(1.01, path.center)
+        if (path.bounds.height > (view.size.height * 4)) {
+          path.scale(Math.random() * 0.01, path.center)
+          var x = 20 + Math.floor((Math.random() * (view.size.width - 40)))
+          var y = 20 + Math.floor((Math.random() * (view.size.height - 40)))
+          path.position = new Point(x, y)
+        }
+        var opacity = Math.floor(Math.min((Math.max(path.bounds.height - 20, 0) / 100), 1) * 255).toString(16)
+        path.strokeColor = '#' + ((opacity.length > 1) ? opacity.repeat(3) : ('0' + opacity).repeat(3))
+      })
+    }
+    </script>
   </head>
   <body>
-    <h1>love beer?</h3>
+    <canvas id="paperCanvas" resize></canvas>
+    <div id="container">
+      <a href="http://www.craftbrewingcapital.co.nz/breweries/"><h1>love beer?</h1></a>
+    </div>
   </body>
 </html>
